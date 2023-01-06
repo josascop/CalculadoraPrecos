@@ -1,4 +1,9 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using CalculadoraPrecos.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<CalculadoraPrecosContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CalculadoraPrecosContext") ?? throw new InvalidOperationException("Connection string 'CalculadoraPrecosContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
