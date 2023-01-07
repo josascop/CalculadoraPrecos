@@ -13,10 +13,7 @@ public class ProdutosController : Controller {
     public async Task<IActionResult> Index() {
         var res = await _produtoService.BuscarTodosAsync();
 
-        if (res.Count == 0) {
-            ViewData["Msg"] = "Você ainda não adicionou produtos ao sistema";
-            return RedirectToAction(nameof(Index));
-        }
+        if (res.Count == 0) ViewData["Msg"] = "Você ainda não adicionou produtos ao sistema";
 
         return View(res);
     }

@@ -1,13 +1,14 @@
 ﻿@model IEnumerable<CalculadoraPrecos.Models.Produto>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Produtos";
 }
 
-<h1>Index</h1>
+<hr />
+<h3>@ViewData["Title"]</h3>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-secondary btn-sm">Adicionar</a>
 </p>
 <table class="table">
     <thead>

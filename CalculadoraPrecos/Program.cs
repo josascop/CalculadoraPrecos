@@ -1,12 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using CalculadoraPrecos.Data;
+using CalculadoraPrecos.Services;
+using Microsoft.Data.Sqlite;
+
 var builder = WebApplication.CreateBuilder(args);
+
+//var conexao = new SqliteConnectionStringBuilder(
+//        Path.Join("C:", "Users", "Eu", "Desktop", "dbprodutos.db").ToString()) {
+//    Mode = SqliteOpenMode.ReadWriteCreate,
+//}.ToString();
+
+var conexao = new SqliteConnection(
+    $"Data Source={Path.Join("C:", "Users", "Eu", "Desktop", "db", "dbprodutos.db")}");
+
 builder.Services.AddDbContext<CalculadoraPrecosContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CalculadoraPrecosContext") ?? throw new InvalidOperationException("Connection string 'CalculadoraPrecosContext' not found.")));
+    options.UseSqlite(conexao));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<ProdutoService>();
 
 var app = builder.Build();
 
