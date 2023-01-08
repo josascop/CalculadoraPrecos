@@ -2,6 +2,7 @@
 using CalculadoraPrecos.Services;
 using CalculadoraPrecos.Models;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CalculadoraPrecos.Controllers;
 public class ProdutosController : Controller {
@@ -21,7 +22,7 @@ public class ProdutosController : Controller {
     }
 
     // GET: Produtos/Create
-    public async Task<IActionResult> CreateAsync() {
+    public IActionResult CreateAsync() {
         return View(new Produto());
     }
 
@@ -31,102 +32,87 @@ public class ProdutosController : Controller {
     public async Task<IActionResult> CreateAsync(Produto produto) {
         if (!ModelState.IsValid) return View(produto);
 
+        produto.Formatar(null);
         await _produtoService.Inserir(produto);
         return RedirectToAction(nameof(Index));
     }
 
-    //// GET: Produtos/Details/5
-    //public async Task<IActionResult> Details(int? id) {
-    //    if (id == null || _context.Produto == null) {
-    //        return NotFound();
-    //    }
+    // GET: Produtos/Details/5
+    public async Task<IActionResult> Details(int? id) {
+        if (id is null) return RedirectToAction(nameof(Error), new ErrorViewModel { Message = "Id inválido" });
 
-    //    var produto = await _context.Produto
-    //        .FirstOrDefaultAsync(m => m.Id == id);
-    //    if (produto == null) {
-    //        return NotFound();
-    //    }
+        Produto? p = await _produtoService.BuscarPorIdAsync(id.Value);
+        if (p is null) return RedirectToAction(nameof(Error), new ErrorViewModel { Message = "Produto não encontrado" });
 
-    //    return View(produto);
-    //}
+        return View(p);
+    }
 
 
+    // GET: Produtos/Edit/5
+    public async Task<IActionResult> Edit(int? id) {
+        if (id is null) return RedirectToAction(nameof(Error), new ErrorViewModel { Message = "Id inválido" });
 
 
+        var p = await _produtoService.BuscarPorIdAsync(id.Value);
+        if (p is null) return RedirectToAction(nameof(Error), new ErrorViewModel { Message = "Produto não encontrado" });
 
-    //// GET: Produtos/Edit/5
-    //public async Task<IActionResult> Edit(int? id) {
-    //    if (id == null || _context.Produto == null) {
-    //        return NotFound();
-    //    }
+        return View(p);
+    }
 
-    //    var produto = await _context.Produto.FindAsync(id);
-    //    if (produto == null) {
-    //        return NotFound();
-    //    }
-    //    return View(produto);
-    //}
+    // POST: Produtos/Edit/5
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, Produto p) {
+        if (!ModelState.IsValid) return View(p);
+        if (id != p.Id) return RedirectToAction(nameof(Error), new ErrorViewModel { Message = "Ids diferentes" });
 
-    //// POST: Produtos/Edit/5
-    //// To protect from overposting attacks, enable the specific properties you want to bind to.
-    //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,PrecoUnitario,EmEstoque,Tipo,CriadoEm,UltimaAtualizacao")] Produto produto) {
-    //    if (id != produto.Id) {
-    //        return NotFound();
-    //    }
 
-    //    if (ModelState.IsValid) {
-    //        try {
-    //            _context.Update(produto);
-    //            await _context.SaveChangesAsync();
-    //        }
-    //        catch (DbUpdateConcurrencyException) {
-    //            if (!ProdutoExists(produto.Id)) {
-    //                return NotFound();
-    //            } else {
-    //                throw;
-    //            }
-    //        }
-    //        return RedirectToAction(nameof(Index));
-    //    }
-    //    return View(produto);
-    //}
-
-    //// GET: Produtos/Delete/5
-    //public async Task<IActionResult> Delete(int? id) {
-    //    if (id == null || _context.Produto == null) {
-    //        return NotFound();
-    //    }
-
-    //    var produto = await _context.Produto
-    //        .FirstOrDefaultAsync(m => m.Id == id);
-    //    if (produto == null) {
-    //        return NotFound();
-    //    }
-
-    //    return View(produto);
-    //}
-
-    //// POST: Produtos/Delete/5
-    //[HttpPost, ActionName("Delete")]
-    //[ValidateAntiForgeryToken]
-    //public async Task<IActionResult> DeleteConfirmed(int id) {
-    //    if (_context.Produto == null) {
-    //        return Problem("Entity set 'CalculadoraPrecosContext.Produto'  is null.");
-    //    }
-    //    var produto = await _context.Produto.FindAsync(id);
-    //    if (produto != null) {
-    //        _context.Produto.Remove(produto);
-    //    }
-
-    //    await _context.SaveChangesAsync();
-    //    return RedirectToAction(nameof(Index));
-    //}
-
-    //private bool ProdutoExists(int id) {
-    //    return (_context.Produto?.Any(e => e.Id == id)).GetValueOrDefault();
-    //}
+        try {
+            p.Formatar("atualizar");
+            await _produtoService.Atualizar(p);
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateConcurrencyException e) {
+            return RedirectToAction(nameof(Error), new ErrorViewModel { Message = e.Message });
+        }
+    }
 }
+
+//// GET: Produtos/Delete/5
+//public async Task<IActionResult> Delete(int? id) {
+//    if (id == null || _context.Produto == null) {
+//        return NotFound();
+//    }
+
+//    var produto = await _context.Produto
+//        .FirstOrDefaultAsync(m => m.Id == id);
+//    if (produto == null) {
+//        return NotFound();
+//    }
+
+//    return View(produto);
+//}
+
+//// POST: Produtos/Delete/5
+//[HttpPost, ActionName("Delete")]
+//[ValidateAntiForgeryToken]
+//public async Task<IActionResult> DeleteConfirmed(int id) {
+//    if (_context.Produto == null) {
+//        return Problem("Entity set 'CalculadoraPrecosContext.Produto'  is null.");
+//    }
+//    var produto = await _context.Produto.FindAsync(id);
+//    if (produto != null) {
+//        _context.Produto.Remove(produto);
+//    }
+
+//    await _context.SaveChangesAsync();
+//    return RedirectToAction(nameof(Index));
+//}
+
+//private bool ProdutoExists(int id) {
+//    return (_context.Produto?.Any(e => e.Id == id)).GetValueOrDefault();
+//}
+
 

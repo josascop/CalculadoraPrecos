@@ -35,4 +35,10 @@ public class Produto {
         UltimaAtualizacao = DateTime.Now;
         return;
     }
+
+    public void Formatar(string? etapa) {
+        if (etapa == "atualizar") UltimaAtualizacao = DateTime.Now;
+        Nome = Nome.ToUpper().Trim();
+        return;
+    }
 }

@@ -19,4 +19,19 @@ public class ProdutoService {
         _context.Add(p);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<Produto?> BuscarPorIdAsync(int id) {
+        return await _context.Produto.FirstOrDefaultAsync(p => p.Id == id);
+    }
+
+    public async Task Atualizar(Produto produto) {
+        if (!await _context.Produto.AnyAsync(p => p.Id == produto.Id))
+            throw new DbUpdateConcurrencyException("Id não encontrado");
+
+        try {
+            _context.Update(produto);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException e) { throw e; }
+    }
 }
