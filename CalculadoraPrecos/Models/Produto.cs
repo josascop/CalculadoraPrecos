@@ -13,22 +13,26 @@ public class Produto {
     [Required(ErrorMessage = "Informe o preço do produto")]
     [Range(0.01, double.MaxValue, ErrorMessage = "Preço inválido")]
     [Display(Name = "Preço unitário")]
+    [DataType(DataType.Currency)]
     public decimal PrecoUnitario { get; set; }
 
-    [DefaultValue(0)]
-    [Display(Name = "Em estoque")]
-    public uint EmEstoque { get; set; }
+    [Required(ErrorMessage = "Informe a unidade")]
+    [EnumDataType(typeof(Unidade))]
+    public Unidade Unidade { get; set; }
 
-    [Required(ErrorMessage = "Informe o tipo do produto")]
-    [EnumDataType(typeof(TipoProduto), ErrorMessage = "Tipo inválido")]
-    public TipoProduto Tipo { get; set; }
-
-    [Required(ErrorMessage = "Informe uma data de criação")]
     [Display(Name = "Criado em"), DataType(DataType.Date)]
-    public DateTime CriadoEm { get; set; }
+    public DateTime CriadoEm { get; }
 
     [Display(Name = "Última atualização"), DataType(DataType.Date)]
     public DateTime UltimaAtualizacao { get; set; }
 
-    public Produto() { }
+    public Produto() {
+        CriadoEm = DateTime.Now;
+        UltimaAtualizacao = DateTime.Now;
+    }
+
+    public void SinalizarAtualizacao() {
+        UltimaAtualizacao = DateTime.Now;
+        return;
+    }
 }

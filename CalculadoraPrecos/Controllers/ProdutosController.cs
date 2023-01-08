@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CalculadoraPrecos.Services;
+using CalculadoraPrecos.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CalculadoraPrecos.Controllers;
 public class ProdutosController : Controller {
@@ -18,6 +20,21 @@ public class ProdutosController : Controller {
         return View(res);
     }
 
+    // GET: Produtos/Create
+    public async Task<IActionResult> CreateAsync() {
+        return View(new Produto());
+    }
+
+    // POST: Produtos/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateAsync(Produto produto) {
+        if (!ModelState.IsValid) return View(produto);
+
+        await _produtoService.Inserir(produto);
+        return RedirectToAction(nameof(Index));
+    }
+
     //// GET: Produtos/Details/5
     //public async Task<IActionResult> Details(int? id) {
     //    if (id == null || _context.Produto == null) {
@@ -33,24 +50,9 @@ public class ProdutosController : Controller {
     //    return View(produto);
     //}
 
-    //// GET: Produtos/Create
-    //public IActionResult Create() {
-    //    return View();
-    //}
 
-    //// POST: Produtos/Create
-    //// To protect from overposting attacks, enable the specific properties you want to bind to.
-    //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public async Task<IActionResult> Create([Bind("Id,Nome,PrecoUnitario,EmEstoque,Tipo,CriadoEm,UltimaAtualizacao")] Produto produto) {
-    //    if (ModelState.IsValid) {
-    //        _context.Add(produto);
-    //        await _context.SaveChangesAsync();
-    //        return RedirectToAction(nameof(Index));
-    //    }
-    //    return View(produto);
-    //}
+
+
 
     //// GET: Produtos/Edit/5
     //public async Task<IActionResult> Edit(int? id) {

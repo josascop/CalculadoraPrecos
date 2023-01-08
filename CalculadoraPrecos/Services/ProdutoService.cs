@@ -14,4 +14,9 @@ public class ProdutoService {
     public async Task<List<Produto>> BuscarTodosAsync() {
         return await _context.Produto.ToListAsync();
     }
+
+    public async Task Inserir(Produto p) {
+        _context.Add(p);
+        await _context.SaveChangesAsync();
+    }
 }

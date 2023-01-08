@@ -5,11 +5,6 @@ using Microsoft.Data.Sqlite;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//var conexao = new SqliteConnectionStringBuilder(
-//        Path.Join("C:", "Users", "Eu", "Desktop", "dbprodutos.db").ToString()) {
-//    Mode = SqliteOpenMode.ReadWriteCreate,
-//}.ToString();
-
 var conexao = new SqliteConnection(
     $"Data Source={Path.Join("C:", "Users", "Eu", "Desktop", "db", "dbprodutos.db")}");
 
