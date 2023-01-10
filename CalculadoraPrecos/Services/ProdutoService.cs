@@ -24,12 +24,22 @@ public class ProdutoService {
         return await _context.Produto.FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task Atualizar(Produto produto) {
+    public async Task AtualizarAsync(Produto produto) {
         if (!await _context.Produto.AnyAsync(p => p.Id == produto.Id))
             throw new DbUpdateConcurrencyException("Id não encontrado");
 
         try {
             _context.Update(produto);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException e) { throw e; }
+    }
+
+    public async Task DeletarAsync(int id) {
+        try {
+            Produto? p = await _context.Produto.FindAsync(id);
+            if (p is null) return;
+            _context.Remove(p);
             await _context.SaveChangesAsync();
         }
         catch (DbUpdateConcurrencyException e) { throw e; }

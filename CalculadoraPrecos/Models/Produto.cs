@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace CalculadoraPrecos.Models;
 
@@ -21,23 +20,15 @@ public class Produto {
     public Unidade Unidade { get; set; }
 
     [Display(Name = "Criado em"), DataType(DataType.Date)]
-    public DateTime CriadoEm { get; }
+    public DateTime CriadoEm { get; set; }
 
     [Display(Name = "Última atualização"), DataType(DataType.Date)]
     public DateTime UltimaAtualizacao { get; set; }
 
     public Produto() {
-        CriadoEm = DateTime.Now;
-        UltimaAtualizacao = DateTime.Now;
     }
 
-    public void SinalizarAtualizacao() {
-        UltimaAtualizacao = DateTime.Now;
-        return;
-    }
-
-    public void Formatar(string? etapa) {
-        if (etapa == "atualizar") UltimaAtualizacao = DateTime.Now;
+    public void Formatar() {
         Nome = Nome.ToUpper().Trim();
         return;
     }
